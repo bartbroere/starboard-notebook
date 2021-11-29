@@ -20,11 +20,6 @@ jobs:
         
     - name: Setup Chromium
       uses: browser-actions/setup-chrome@latest
-    - name: Install using Lerna
-      run: |
-        npm i patch-package
-        yarn install
-        yarn run lerna bootstrap
         
     - name: Build Starboard Rich Editor
       working-directory: packages/starboard-rich-editor
