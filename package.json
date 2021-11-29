@@ -9,6 +9,9 @@
     "build": "lerna run build --sort",
     "lerna": "lerna"
   },
+  "dependencies": {
+    "patch-package": "^6.4.7"
+  },
   "devDependencies": {
     "lerna": "^4.0.0"
   }
