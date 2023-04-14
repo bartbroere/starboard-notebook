@@ -1,6 +1,6 @@
 {
   "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
-  "postCreateCommand": "bash -i -c 'yarn run bootstrap && yarn build'",
+  "postCreateCommand": "bash -i -c 'npm install -g lerna && yarn run bootstrap && yarn build'",
   "customizations": {
     "vscode": {
       "extensions": ["dbaeumer.vscode-eslint"]
