@@ -5,11 +5,12 @@
   "files": [],
   "license": "MPL-2.0",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build --sort",
-    "lerna": "lerna"
+    "build": "yarn workspaces run build"
   },
-  "devDependencies": {
-    "lerna": "^4.0.0"
-  }
+  "workspaces": [
+    "packages/starboard-python",
+    "packages/starboard-rich-editor",
+    "packages/starboard-notebook"
+  ],
+  "nohoist": ["**/starboard-*", "**/starboard-*/**", "**/pyodide", "**/pyodide/**"]
 }
