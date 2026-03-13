@@ -8,6 +8,8 @@
   "scripts": {
     "build": "rimraf dist && yarn build:pyodide && rollup -c rollup.config.ts",
     "build:pyodide": "mkdir -p dist && node -e \"const src=require.resolve('pyodide/pyodide.js'); require('fs').copyFileSync(src, 'dist/pyodide.js')\"",
+    "build:pyodide-inline": "mkdir -p dist && node scripts/build-pyodide-inline.js",
+    "build:inline": "rimraf dist && yarn build:pyodide-inline && rollup -c rollup.config.ts",
     "test": "starlit nbtest test --timeout=60",
     "test:nocoi": "starlit nbtest test --timeout=60 --cross_origin_isolated=false"
   },
