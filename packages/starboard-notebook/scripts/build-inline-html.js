@@ -101,8 +101,14 @@ if (exists('favicon.ico')) {
 }
 
 // ─── main JS ─────────────────────────────────────────────────────────────────
+// Webpack 5's auto-publicPath detection relies on document.currentScript.src,
+// which is empty for inline scripts. Replace the throw with a "./" fallback.
 
-const mainJs = read('starboard-notebook.js');
+const mainJs = read('starboard-notebook.js')
+  .replace(
+    /if\(!(\w+)\)throw new Error\("Automatic publicPath is not supported in this browser"\)/,
+    'if(!$1)$1="./"'
+  );
 
 // ─── assemble HTML ────────────────────────────────────────────────────────────
 

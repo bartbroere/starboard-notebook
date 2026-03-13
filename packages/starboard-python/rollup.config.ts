@@ -36,6 +36,23 @@ const css = () => {
   };
 };
 
+// Stub Node.js built-ins so they don't become external ES-module `import`
+// statements in the browser bundle (pyodide.asm.js references them).
+const stubNodeBuiltins = () => ({
+  name: "stub-node-builtins",
+  resolveId(id) {
+    const bare = id.startsWith("node:") ? id.slice(5) : id;
+    const builtins = ["fs","path","crypto","child_process","os","util",
+      "stream","events","buffer","url","http","https","net","tls","zlib","assert"];
+    if (builtins.includes(bare)) return "\0stub:" + bare;
+    return null;
+  },
+  load(id) {
+    if (id.startsWith("\0stub:")) return "export default {}; export const readFileSync=()=>null; export const existsSync=()=>false; export const join=(...a)=>a.join('/');";
+    return null;
+  },
+});
+
 export default [
   {
     input: `src/worker/kernel.ts`,
@@ -56,6 +73,7 @@ export default [
     output: [{ file: "dist/pyodide-worker.js", format: "es" }],
     inlineDynamicImports: true,
     plugins: [
+      stubNodeBuiltins(),
       resolve({ browser: true }),
       typescript({
         tsconfig: "./src/worker/tsconfig.json",
