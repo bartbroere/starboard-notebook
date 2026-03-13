@@ -17,8 +17,8 @@ import {patchMatplotlib} from "../pyodide/matplotlib";
 type LoadPyodideFunction = (config: {
       indexURL: string;
       stdin?: () => any | null;
-      print?: (text: string) => void;
-      printErr?: (text: string) => void;
+      stdout?: (text: string) => void;
+      stderr?: (text: string) => void;
       fullStdLib?: boolean;
     }) =>  Promise<PyodideType>;
 
@@ -63,7 +63,7 @@ class PyodideKernel implements WorkerKernel {
       this.proxiedDrawCanvas.apply({}, [pixels, width, height]);
     };
 
-    let artifactsURL = this.options.artifactsUrl || "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/";
+    let artifactsURL = this.options.artifactsUrl || "https://cdn.jsdelivr.net/pyodide/v0.29.3/full/";
     if (!artifactsURL.endsWith("/")) artifactsURL += "/";
 
     if (!manager.proxy && !this.options.isMainThread) {
@@ -73,10 +73,10 @@ class PyodideKernel implements WorkerKernel {
     this.pyodide = await loadPyodide({
       indexURL: artifactsURL,
       stdin: this.createStdin(),
-      print: (text: any) => {
+      stdout: (text: any) => {
         manager.log(this, text + "");
       },
-      printErr: (text: any) => {
+      stderr: (text: any) => {
         manager.logError(this, text + "");
       },
       fullStdLib: false,
