@@ -10,7 +10,8 @@
   "scripts": {
     "bootstrap": "yarn install",
     "build": "lerna run build --sort",
-    "build:inline": "yarn workspace starboard-rich-editor build && yarn workspace starboard-python build:inline && yarn workspace starboard-notebook build",
+    "build:inline": "yarn workspace starboard-rich-editor build && yarn workspace starboard-python build:inline && yarn workspace starboard-notebook build && yarn workspace starboard-notebook build:inline-html",
+    "build:inline-html": "yarn workspace starboard-notebook build:inline-html",
     "lerna": "lerna"
   },
   "devDependencies": {
