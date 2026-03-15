@@ -78,4 +78,3 @@ jobs:
     - name: Starlit NBTest
       working-directory: packages/starboard-notebook
       run: npm run nbtest -- --timeout 150
-
