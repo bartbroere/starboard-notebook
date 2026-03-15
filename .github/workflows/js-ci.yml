@@ -22,7 +22,7 @@ jobs:
       uses: browser-actions/setup-chrome@latest
     - name: Install using Lerna
       run: |
-        npm i -g patch-package
+        npm i -g patch-package npm@8
         yarn install
         yarn run lerna bootstrap
         
