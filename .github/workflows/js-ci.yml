@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+    # Pinned at Ubuntu 22 for now because of Chromium sandbox issues caused by AppArmor. Described here: 
+    # https://web.archive.org/web/20251123111634/https://chromium.googlesource.com/chromium/src/+/main/docs/linux/suid_sandbox_development.md
+    # Try setting it to ubuntu-latest to see the error caused in the buildstep "Starlit NBTest"
     runs-on: ubuntu-22.04
     
     steps:
@@ -21,6 +24,9 @@ jobs:
     - name: Setup Chromium
       uses: browser-actions/setup-chrome@latest
     - name: Install using Lerna
+      # npm 8 is required because the npm bin subcommand is required by
+      # https://github.com/gzuidhof/go-npm/blob/master/src/common.js#L25
+      # which in turn is a dependency of starlit
       run: |
         npm i -g patch-package npm@8
         yarn install
