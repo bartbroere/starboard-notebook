@@ -4,4 +4,8 @@ export default class HardBreak_ extends HardBreak {
   get name() {
     return 'hardbreak'
   }
+
+  parseMarkdown() {
+    return { node: 'hardbreak' }
+  }
 }
