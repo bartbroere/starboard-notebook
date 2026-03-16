@@ -12,7 +12,7 @@
         "sourceMap": true,
         "strict": true,
         "outDir": "./dist",
-        // "skipLibCheck": true,
+        "skipLibCheck": true,
         "esModuleInterop": false,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true
