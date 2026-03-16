@@ -314,7 +314,6 @@ class RichMarkdownEditor extends React.PureComponent<Props, State> {
       [
         ...[
           new Doc(),
-          new HardBreak(),
           new HardBreak_(),
           new Paragraph(),
           new Blockquote(),
