@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
@@ -6,6 +7,17 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
 const webpack = require('webpack')
+
+// Resolve the root directory of an npm package by walking up from its entry point.
+// This works with yarn workspaces where packages are hoisted to the workspace root.
+function resolvePackageDir(packageName) {
+    let dir = path.dirname(require.resolve(packageName));
+    while (dir !== path.dirname(dir)) {
+        if (fs.existsSync(path.join(dir, 'package.json'))) return dir;
+        dir = path.dirname(dir);
+    }
+    throw new Error(`Cannot find package directory for ${packageName}`);
+}
 
 const pkg = require("././package.json");
 
@@ -20,11 +32,11 @@ const baseConfig = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.d.ts'],
         alias: {
-            "react": path.resolve("./node_modules/preact/compat"),
-            "react-dom": path.resolve("./node_modules/preact/compat"),
-            "markdown-it": path.resolve(path.join(__dirname, 'node_modules/markdown-it')),
-            "prosemirror-view": path.resolve(path.join(__dirname, '../starboard-rich-editor/node_modules/rich-markdown-editor/node_modules/prosemirror-view')),
-            "katex": path.resolve(path.join(__dirname, '../starboard-rich-editor/node_modules/katex'))
+            "react": resolvePackageDir("preact/compat"),
+            "react-dom": resolvePackageDir("preact/compat"),
+            "markdown-it": resolvePackageDir("markdown-it"),
+            "prosemirror-view": resolvePackageDir("prosemirror-view"),
+            "katex": resolvePackageDir("katex"),
         },
         fallback: { "assert": require.resolve("assert/") }
     },

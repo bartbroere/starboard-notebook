@@ -2,10 +2,13 @@
   "name": "starboard-monorepo",
   "version": "0.0.1",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "files": [],
   "license": "MPL-2.0",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "yarn install",
     "build": "lerna run build --sort",
     "lerna": "lerna"
   },
