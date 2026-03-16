@@ -72,7 +72,7 @@ jobs:
       run: npm run lint
       
     - name: Postinstall Starlit
-      working-directory: packages/starboard-notebook/node_modules/starlit
+      working-directory: node_modules/starlit
       run: npm run postinstall
       
     - name: Starlit NBTest
