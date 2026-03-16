@@ -9,7 +9,7 @@ os.environ["MPLBACKEND"] = "AGG"`);
 
   module.runPython(`import matplotlib
 import matplotlib.pyplot
-from pyodide import create_proxy
+from pyodide.ffi import create_proxy
 from js import drawPyodideCanvas
 
 def show():
