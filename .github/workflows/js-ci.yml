@@ -21,8 +21,16 @@ jobs:
       with:
         node-version: 18.x
         
-    - name: Setup Chromium
-      uses: browser-actions/setup-chrome@latest
+    - name: Install Chrome
+      # Install google-chrome-stable from the .deb directly so the binary is
+      # named "google-chrome-stable" (and symlinked as "google-chrome"), which
+      # is on the list of executables that chromedp (used by starlit) searches
+      # for. browser-actions/setup-chrome@latest is avoided because its binary
+      # naming changed between versions and the @latest tag is unpredictable.
+      run: |
+        wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+        google-chrome --version
     - name: Install using Lerna
       # npm 8 is required because the npm bin subcommand is required by
       # https://github.com/gzuidhof/go-npm/blob/master/src/common.js#L25
