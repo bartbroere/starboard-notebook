@@ -35,7 +35,17 @@ const baseConfig = {
             "react": resolvePackageDir("preact/compat"),
             "react-dom": resolvePackageDir("preact/compat"),
             "markdown-it": resolvePackageDir("markdown-it"),
-            "prosemirror-view": resolvePackageDir("prosemirror-view"),
+            // prosemirror-state and prosemirror-view each ship both a CJS and ESM
+            // build. Webpack 5 loads the ESM build for `import` statements and the
+            // CJS build for `require()` calls (e.g. from rich-markdown-editor's
+            // pre-built dist files). Each build has its own module-level `keys`
+            // counter, so anonymous plugins from the two builds end up with the
+            // same string key (e.g. "plugin$1"), causing the
+            // "Adding different instances of a keyed plugin" error at runtime.
+            // Pointing the alias at the exact CJS file forces webpack to bundle
+            // only a single copy regardless of import style.
+            "prosemirror-state": require.resolve("prosemirror-state"),
+            "prosemirror-view": require.resolve("prosemirror-view"),
             "katex": resolvePackageDir("katex"),
         },
         fallback: { "assert": require.resolve("assert/") }
