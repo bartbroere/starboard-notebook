@@ -1,6 +1,6 @@
 {
   "name": "starboard-python",
-  "version": "0.15.7",
+  "version": "0.15.8",
   "description": "Python cells for Starboard Notebook",
   "main": "dist/starboardPython.js",
   "module": "dist/starboardPython.js",
