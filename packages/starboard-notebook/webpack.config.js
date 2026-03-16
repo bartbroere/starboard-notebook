@@ -19,6 +19,24 @@ function resolvePackageDir(packageName) {
     throw new Error(`Cannot find package directory for ${packageName}`);
 }
 
+// Resolve the ESM entry point of a package (the "import" export condition).
+// Aliasing all prosemirror packages to their ESM build ensures a single module
+// instance regardless of whether they are loaded via `import` (TypeScript sources)
+// or `require()` (rich-markdown-editor pre-built CJS dist). Without this, webpack 5
+// loads both the ESM and CJS builds, each with their own PluginKey counter, causing
+// the "Adding different instances of a keyed plugin" runtime error.
+function resolvePackageESM(packageName) {
+    const pkgDir = resolvePackageDir(packageName);
+    const pkg = require(path.join(pkgDir, 'package.json'));
+    const expts = pkg.exports;
+    if (!expts) return pkgDir;
+    const importEntry = typeof expts === 'object'
+        ? (expts['import'] || (expts['.'] && expts['.']['import']))
+        : null;
+    if (!importEntry) return pkgDir;
+    return path.resolve(pkgDir, importEntry);
+}
+
 const pkg = require("././package.json");
 
 const baseConfig = {
@@ -35,17 +53,28 @@ const baseConfig = {
             "react": resolvePackageDir("preact/compat"),
             "react-dom": resolvePackageDir("preact/compat"),
             "markdown-it": resolvePackageDir("markdown-it"),
-            // prosemirror-state and prosemirror-view each ship both a CJS and ESM
-            // build. Webpack 5 loads the ESM build for `import` statements and the
-            // CJS build for `require()` calls (e.g. from rich-markdown-editor's
-            // pre-built dist files). Each build has its own module-level `keys`
-            // counter, so anonymous plugins from the two builds end up with the
-            // same string key (e.g. "plugin$1"), causing the
+            // All prosemirror packages ship both a CJS and ESM build. Webpack 5 loads
+            // the ESM build for `import` statements and the CJS build for `require()`
+            // calls (e.g. from rich-markdown-editor's pre-built dist). Each build has
+            // its own module-level `keys` counter, so anonymous PluginKeys from the
+            // two builds get the same string key (e.g. "plugin$1"), causing the
             // "Adding different instances of a keyed plugin" error at runtime.
-            // Pointing the alias at the exact CJS file forces webpack to bundle
-            // only a single copy regardless of import style.
-            "prosemirror-state": require.resolve("prosemirror-state"),
-            "prosemirror-view": require.resolve("prosemirror-view"),
+            // Aliasing every prosemirror package to its ESM entry forces webpack to
+            // bundle exactly one copy regardless of import style.
+            "prosemirror-commands": resolvePackageESM("prosemirror-commands"),
+            "prosemirror-dropcursor": resolvePackageESM("prosemirror-dropcursor"),
+            "prosemirror-gapcursor": resolvePackageESM("prosemirror-gapcursor"),
+            "prosemirror-history": resolvePackageESM("prosemirror-history"),
+            "prosemirror-inputrules": resolvePackageESM("prosemirror-inputrules"),
+            "prosemirror-keymap": resolvePackageESM("prosemirror-keymap"),
+            "prosemirror-markdown": resolvePackageESM("prosemirror-markdown"),
+            "prosemirror-menu": resolvePackageESM("prosemirror-menu"),
+            "prosemirror-model": resolvePackageESM("prosemirror-model"),
+            "prosemirror-schema-list": resolvePackageESM("prosemirror-schema-list"),
+            "prosemirror-state": resolvePackageESM("prosemirror-state"),
+            "prosemirror-tables": resolvePackageESM("prosemirror-tables"),
+            "prosemirror-transform": resolvePackageESM("prosemirror-transform"),
+            "prosemirror-view": resolvePackageESM("prosemirror-view"),
             "katex": resolvePackageDir("katex"),
         },
         fallback: { "assert": require.resolve("assert/") }
